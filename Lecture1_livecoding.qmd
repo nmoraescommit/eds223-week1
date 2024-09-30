@@ -1,0 +1,142 @@
+---
+title: "Week1_Lab"
+author: "NM"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+# vector data
+install.packages("sf")
+
+# raster data
+install.packages("stars")
+
+install.packages("tmap")
+
+# File paths
+install.packages("here") 
+```
+
+```{r}
+library(sf)
+library(stars)
+library(tmap)
+library(here)
+```
+
+```{r}
+# raster of global elevation
+world_elevation <- read_stars(here("data", "worldelevation.tif"))
+
+# country boundaries
+world_vector <- read_sf(here("data","worldvector.gpkg"))
+
+# major cities
+world_cities <- read_sf(here("data", "worldcities.gpkg"))
+```
+
+```{r}
+tm_shape(world_elevation) +
+  tm_raster()+
+tm_shape(world_vector) +
+  tm_borders() +
+  tm_shape(world_cities, is.master = TRUE) +
+  tm_dots()
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons(col = "lightblue",
+              border.col = "darkblue",
+              lwd = 0.99,
+              lty = "dotted")
+```
+
+polygons are a combination of the below:
+
+```{r}
+tm_shape(world_vector) +
+  tm_borders(col = 'red')
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill(col = "lightblue")
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill("CO2_emissions")
+```
+
+```{r}
+tm_shape(world_cities) +
+  tm_dots()
+# or tm_bubbles or tm_squares or ...
+```
+
+Should really only be using shape for qualititative info
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons("life_expectancy",
+              palette = c("pink1","lightblue"),
+              title = "Life Expectancy in Years")
+```
+
+```{r}
+install.packages("viridisLite")
+library(viridisLite)
+```
+
+```{r}
+tm_shape(world_vector) + 
+  tm_polygons("life_expectancy",
+              palette = viridis(8),
+              title = "Life Expectancy in Years")
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons(col = "lightblue") +
+tm_shape(world_cities) +
+  tm_symbols(size = "pop2020",
+             legend.size.is.portrait = TRUE)
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill() +
+  tm_grid()
+```
+
+```{r}
+```{r}
+tm_shape(world_vector) +
+  tm_graticules() +
+  tm_fill()
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_graticules() +
+  tm_fill() +
+  tm_scale_bar() +
+  tm_compass(position = c("left", "top"))
+```
+
+```{r}
+tmap_mode("view")
+
+map1 <- tm_shape(world_vector) +
+  tm_fill(col = "wb_income_region",
+          palette = viridisLite::plasma(5),
+          title = "Regional Income") +
+  tm_layout(bg.color = "grey95",
+            main.title = "Global Income by Country",
+            frame = FALSE)
+
+tmap_save(map1, here("tmap_ex.png"))
+```
