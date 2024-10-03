@@ -47,11 +47,13 @@ tm_shape(world_vector) +
 ```
 
 ```{r}
-tm_shape(world_vector) +
+mapxx <- tm_shape(world_vector) +
   tm_polygons(col = "lightblue",
-              border.col = "darkblue",
-              lwd = 0.99,
-              lty = "dotted")
+             border.col = "darkblue",
+            lwd = 0.99,
+            lty = "dotted")
+
+mapxx
 ```
 
 polygons are a combination of the below:
@@ -112,7 +114,6 @@ tm_shape(world_vector) +
   tm_grid()
 ```
 
-```{r}
 ```{r}
 tm_shape(world_vector) +
   tm_graticules() +

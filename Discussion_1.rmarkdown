@@ -1,0 +1,14 @@
+---
+title: "Discussion_1"
+author: "Naomi Moraes"
+format: html
+---
+
+```{r}
+library(here)
+library(tidyverse)
+library(stars)
+library(sf)
+library(tmap)
+```
+

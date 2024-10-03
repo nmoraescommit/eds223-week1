@@ -1,0 +1,108 @@
+---
+title: "Discussion_1"
+author: "Naomi Moraes"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+
+# Load in relevant packages
+
+library(here)
+library(tidyverse)
+library(stars)
+library(sf)
+library(tmap)
+library(viridis) 
+```
+
+```{r}
+ei_points <- sf::read_sf(here::here("data", "easter_island", "ei_points.gpkg"))
+volcanoes <- subset(ei_points, type == "volcano")
+ei_elev <- stars::read_stars(here::here("data", "easter_island", "ei_elev.tif"))
+ei_borders <- sf::read_sf(here::here("data", "easter_island", "ei_border.gpkg"))
+ei_roads <- sf::read_sf(here::here("data", "easter_island", "ei_roads.gpkg"))
+```
+
+```{r}
+#Now, to meet this week’s learning objectives, your task:
+# Create a map of Easter Island
+
+easter_island_map <- tm_shape(ei_borders) +
+                      tm_polygons(col = "khaki3",
+                                  border.col = "black",
+                                  lwd = .99,
+                                  lty = "dotted")
+  
+
+easter_island_map
+```
+
+```{r}
+# Create a map of Easter Island and…
+# 1. …denote the island’s borders and continuous elevation
+# 2. …denote the island’s volcanoes and roads
+# 3. …play with the color palette and essential map elements
+
+tmap_mode("plot")
+
+easter_island_map_improved <- tm_shape(ei_elev)+
+                              tm_raster(style = "cont",
+                                        palette = viridis(5),
+                                        title = "Elevation (m asl)") + 
+                              tm_shape(ei_borders) +
+                              tm_borders(col ='black') +
+                              tm_shape(ei_roads) +
+                              tm_lines(col = 'white',
+                                       lwd = 'strokelwd',
+                                       legend.lwd.show = FALSE) +
+                              tm_shape(volcanoes) +
+                              tm_dots(col = 'orange',
+                                      shape = 24,
+                                      size = 'elevation',
+                                      title.size = 'Volcanoes (m asl)') +
+                              tm_layout(main.title = "Volcanoes on Easter Island",
+                                        bg.color = "lightblue") +
+                              tm_scale_bar(position = c("left","bottom")) +
+                              tm_compass(show.labels = 2)
+                              
+  
+easter_island_map_improved
+
+#tmap_save(easter_island_map_improved, here("easter_island_discussion.png"))
+```
+
+```{r}
+tmap_mode("view")
+
+# 4. Create an interactive map of Easter Island
+
+easter_island_map_int <- tm_shape(ei_elev)+
+                              tm_raster(style = "cont",
+                                        palette = viridis(5),
+                                        title = "Elevation (m asl)") + 
+                              tm_shape(ei_borders) +
+                              tm_borders(col ='black') +
+                              tm_shape(ei_roads) +
+                              tm_lines(col = 'white',
+                                       lwd = 'strokelwd',
+                                       legend.lwd.show = FALSE) +
+                              tm_shape(volcanoes) +
+                              tm_dots(col = 'orange',
+                                      shape = 24,
+                                      size = 'elevation',
+                                      title = 'Volcanoes (m asl)') +
+                              tm_layout(main.title = "Volcanoes on Easter Island",
+                                        bg.color = "lightblue") +
+                              tm_scale_bar(position = c("left","bottom")) +
+                              tm_compass(show.labels = 1)
+                              
+  
+easter_island_map_int
+
+tmap_save(easter_island_map_improved, here("easter_island_interactive.png"))
+
+```
+
